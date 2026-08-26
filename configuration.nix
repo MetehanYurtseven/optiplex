@@ -3,9 +3,10 @@ let
   admins = import ./admin.nix;
 in {
   imports = [
-    ./disk-config.nix
-    ./modules/zsh.nix
+    ./modules/disk-config.nix
     ./modules/nix.nix
+    ./modules/sudo.nix
+    ./modules/zsh.nix
     ./modules/ssh.nix
     ./modules/nvim.nix
   ];
@@ -18,24 +19,15 @@ in {
   services.openssh.enable = true;
 
   # Users
-  users.users.root.openssh.authorizedKeys.keys = admins;
+  users.users = {
+    root.openssh.authorizedKeys.keys = admins;
+    "metehan.yurtseven" = {
+      isNormalUser = true;
+      uid = 1000;
 
-  users.users."metehan.yurtseven" = {
-    isNormalUser = true;
-    uid = 1000;
-
-    extraGroups = [ "wheel" "systemd-journal" ];
-    openssh.authorizedKeys.keys = admins;
-  };
-
-  # Sudo - only using ssh keys
-  security.pam.sshAgentAuth = {
-    enable = true;
-    authorizedKeysFiles = [ "/etc/ssh/authorized_keys.d/%u" ];
-  };
-  security.pam.services.sudo = {
-    sshAgentAuth = true;
-    unixAuth = false;
+      extraGroups = [ "wheel" "systemd-journal" ];
+      openssh.authorizedKeys.keys = admins;
+    };
   };
 
   virtualisation.docker.enable = true;

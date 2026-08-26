@@ -17,6 +17,7 @@ in {
 
   services.openssh.enable = true;
 
+  # Users
   users.users.root.openssh.authorizedKeys.keys = admins;
 
   users.users."metehan.yurtseven" = {
@@ -27,7 +28,15 @@ in {
     openssh.authorizedKeys.keys = admins;
   };
 
-  security.sudo.wheelNeedsPassword = false;
+  # Sudo - only using ssh keys
+  security.pam.sshAgentAuth = {
+    enable = true;
+    authorizedKeysFiles = [ "/etc/ssh/authorized_keys.d/%u" ];
+  };
+  security.pam.services.sudo = {
+    sshAgentAuth = true;
+    unixAuth = false;
+  };
 
   virtualisation.docker.enable = true;
   

@@ -1,15 +1,8 @@
-{ ... }:
+{ lib, ... }:
 let
-  admins = import ./admin.nix;
+  admins = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMc4b7rjerN0+skf7aEH/fnOvqAu+Y49Rk++IQyf1Fy3" ];
 in {
-  imports = [
-    ./modules/disk-config.nix
-    ./modules/nix.nix
-    ./modules/sudo.nix
-    ./modules/zsh.nix
-    ./modules/ssh.nix
-    ./modules/nvim.nix
-  ];
+  imports = lib.filesystem.listFilesRecursive ./modules;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -33,11 +26,11 @@ in {
   virtualisation.docker.enable = true;
   
   networking.firewall.allowedUDPPorts = [
-    5353
+    5353 # mDNS HomeKit Bridge for HA
   ];
   networking.firewall.allowedTCPPorts = [
-    8123
-    21064
+    8123 # Home Assistant WebUI
+    21064 # HomeKit Bridge for HA
   ];
 
   system.stateVersion = "26.05";

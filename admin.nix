@@ -1,3 +1,0 @@
-[
-  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMc4b7rjerN0+skf7aEH/fnOvqAu+Y49Rk++IQyf1Fy3"
-]
